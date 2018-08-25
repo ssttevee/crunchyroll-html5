@@ -38,6 +38,7 @@ export type IMenu = IMenuItem[];
 
 export interface IChromeSettingsPopupProps {
   api: IPlayerApi;
+  maxHeight: number;
 }
 
 export interface IChromeSettingsPopupState {
@@ -74,7 +75,7 @@ function _renderPanel(elems: (JSX.Element|undefined)[], ref: (el?: Element) => v
       {
         title && (
           <div className="chrome-panel-header">
-            <button className="chrome-button chrome-panel-title" onClick={() => (console.log('return clicked', onreturn),onreturn && onreturn())}>{ title }</button>
+            <button className="chrome-button chrome-panel-title" onClick={() => onreturn && onreturn()}>{ title }</button>
           </div>
         )
       }
@@ -87,7 +88,7 @@ function _renderPanel(elems: (JSX.Element|undefined)[], ref: (el?: Element) => v
 
 function _renderMenuItem(menuItem: IMenuItem, onclick?: () => void): JSX.Element {
   const hasPopup = menuItem.role === 'menuitem';
-  const checked = menuItem.role === 'menuitemradio' && (menuItem as IRadioMenuItem).selected;
+  const checked = (menuItem.role === 'menuitemradio' && menuItem.selected) || (menuItem.role === 'menuitemcheckbox' && menuItem.checked);
   return (
     <div className="chrome-menuitem" role={menuItem.role} aria-disabled={menuItem.disabled} aria-haspopup={hasPopup} aria-checked={checked} onClick={menuItem.disabled ? undefined : onclick}>
       <div className="chrome-menuitem-label">{ menuItem.label }</div>
@@ -195,7 +196,7 @@ export class ChromeSettingsPopup extends Component<IChromeSettingsPopupProps, IC
     });
 
     const rect = targetMenuElem.getBoundingClientRect();
-    this._containerElement.setAttribute('style', `width:${ rect.width }px;height:${ rect.height }px;`);
+    this._containerElement.setAttribute('style', `width:${ rect.width }px;height:${ Math.min(this.props.maxHeight, rect.height) }px;--max-popup-height:${ this.props.maxHeight }px;`);
 
     targetMenuElem.setAttribute('aria-hidden', 'false');
 
@@ -249,7 +250,8 @@ export class ChromeSettingsPopup extends Component<IChromeSettingsPopupProps, IC
     this._handler
       .listen(this.props.api, 'subtitletrackchange', () => this.setState({menu: this._rebuildMenu()}))
       .listen(this.props.api, 'settingsopen', () => this._onSettingsToggle(true), false)
-      .listen(this.props.api, 'settingsclose', () => this._onSettingsToggle(false), false);
+      .listen(this.props.api, 'settingsclose', () => this._onSettingsToggle(false), false)
+      .listen(this.props.api, 'resize', () => this._onNavigate(this._currentMenu), false);
   }
 
   componentWillUnmount() {
@@ -265,7 +267,7 @@ export class ChromeSettingsPopup extends Component<IChromeSettingsPopupProps, IC
     const onNavigate = (label?: string) => this._onNavigate(label);
 
     return (
-      <div class="chrome-popup chrome-settings-menu" ref={containerRef}>
+      <div class="chrome-popup chrome-settings-menu" ref={containerRef} aria-hidden="true">
         { _renderMenu(menu, menuRefs, onNavigate) }
       </div>
     );

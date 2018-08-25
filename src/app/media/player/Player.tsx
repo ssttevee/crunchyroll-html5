@@ -31,6 +31,10 @@ export interface IPlayerProps {
   onSizeChange?: (large: boolean) => void;
 }
 
+export interface IPlayerState {
+  maxPopupHeight: number;
+}
+
 export interface IPlayerConfig {
   title?: string;
   url?: string;
@@ -44,7 +48,7 @@ export interface IPlayerConfig {
   muted?: boolean;
 }
 
-export class Player extends Component<IPlayerProps, {}> implements IActionable {
+export class Player extends Component<IPlayerProps, IPlayerState> implements IActionable {
   private _configCued: boolean = false;
   private _config: IPlayerConfig|undefined = undefined;
   private _actionElement?: Element;
@@ -86,6 +90,9 @@ export class Player extends Component<IPlayerProps, {}> implements IActionable {
       this._config = props.config;
     }
     this._api.setLarge(!!props.large);
+    this.state = {
+      maxPopupHeight: 0,
+    };
   }
 
   getActions(): IAction[] {
@@ -649,6 +656,10 @@ export class Player extends Component<IPlayerProps, {}> implements IActionable {
 
     const rect = this.base.getBoundingClientRect();
 
+    this.setState({
+      maxPopupHeight: rect.height - 49 /* from css: .html5-video-gradient-bottom */ - 12,
+    });
+
     const bottomRect = this._bottomComponent.base
       .querySelector(".chrome-progress-bar-padding")!.getBoundingClientRect();
     const nextVideoRect = this._bottomComponent.base
@@ -734,7 +745,7 @@ export class Player extends Component<IPlayerProps, {}> implements IActionable {
     this._handler.removeAll();
   }
 
-  render(): JSX.Element {
+  render({}: IPlayerProps, { maxPopupHeight }: IPlayerState): JSX.Element {
     const chromelessRef = (el: ChromelessPlayer) => {
       this._chromelessPlayer = el;
       if (this.base) {
@@ -798,7 +809,7 @@ export class Player extends Component<IPlayerProps, {}> implements IActionable {
           ref={actionRef}
           class="html5-video-action"></div>
         <ChromeTooltip ref={tooltipRef}></ChromeTooltip>
-        <ChromeSettingsPopup api={this.getApi()}/>
+        <ChromeSettingsPopup api={this.getApi()} maxHeight={maxPopupHeight}/>
         <div class="html5-video-gradient-bottom"></div>
         <ChromeBottomComponent
           ref={bottomRef}

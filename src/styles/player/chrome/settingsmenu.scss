@@ -3,13 +3,16 @@
 .chrome-settings-menu {
   display: block;
   position: absolute;
-}
-
-.chrome-settings-menu {
   right: 12px;
   bottom: 49px;
+  bottom: var(--bottom-gradient-size);
   z-index: 71;
   will-change: width,height;
+}
+
+.chrome-big-mode .chrome-settings-menu {
+  right: 24px;
+  bottom: 70px;
 }
 
 .chrome-popup {
@@ -43,6 +46,10 @@
   white-space: nowrap;
 }
 
+.chrome-big-mode .chrome-panel-header {
+  height: 49px;
+}
+
 .chrome-panel {
   position: absolute;
   bottom: 0;
@@ -50,6 +57,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   transition: transform .08s cubic-bezier(0.4,0.0,1,1);
+  max-height: var(--max-popup-height);
 }
 
 .chrome-panel[aria-hidden=true] {
@@ -93,6 +101,10 @@
   white-space: nowrap;
 }
 
+.chrome-big-mode .chrome-menuitem-label, .chrome-big-mode .chrome-menuitem-content {
+  padding: 0 22px;
+}
+
 .chrome-menuitem-label {
   font-size: 118%;
   font-weight: 500;
@@ -108,6 +120,10 @@
   cursor: default;
   outline: none;
   height: 33px;
+}
+
+.chrome-big-mode .chrome-menuitem {
+  height: 49px;
 }
 
 .chrome-menuitem:not([aria-disabled=true]) {
@@ -129,27 +145,10 @@
   transform: scale(1);
 }
 
-.chrome-menuitem[aria-checked=true] .chrome-menuitem-toggle-checkbox {
-  background-color: #f78b24;
-  background-color: var(--primary-color);
-}
-
-.chrome-menuitem[aria-checked=true] .chrome-menuitem-toggle-checkbox:after {
-  background-color: #fff;
-  transform: translateX(16px);
-}
-
-.chrome-menuitem[role=menuitemradio] .chrome-menuitem-label {
-  padding-left: 35px;
-  padding-right: 20px;
-  border-bottom: none;
-}
-
-.chrome-menuitem[role=menuitemradio][aria-checked=true] .chrome-menuitem-label {
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMTAwJSIgdmVyc2lvbj0iMS4xIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIxMDAlIj48cGF0aCBkPSJNOSAxNi4yTDQuOCAxMmwtMS40IDEuNEw5IDE5IDIxIDdsLTEuNC0xLjRMOSAxNi4yeiIgZmlsbD0iI2ZmZiIgLz48L3N2Zz4=);
-  background-repeat: no-repeat;
-  background-position: left 10px center;
-  background-size: 18px 18px;
+.chrome-big-mode .chrome-menuitem-toggle-checkbox {
+  height: 21px;
+  width: 54px;
+  border-radius: 21px;
 }
 
 .chrome-menuitem-toggle-checkbox:after {
@@ -162,7 +161,53 @@
   border-radius: 20px;
   margin-top: -3px;
   background-color: #bdbdbd;
+  box-shadow: 0 1px 5px 0 rgba(0,0,0,0.6);
   transition: all .08s cubic-bezier(0.4,0.0,1,1);
+}
+
+.chrome-big-mode .chrome-menuitem-toggle-checkbox:after {
+  left: 0;
+  height: 30px;
+  width: 30px;
+  border-radius: 30px;
+  margin-top: -4.5px;
+}
+
+.chrome-menuitem[aria-checked=true] .chrome-menuitem-toggle-checkbox {
+  background-color: #f78b24;
+  background-color: var(--primary-color);
+}
+
+.chrome-menuitem[aria-checked=true] .chrome-menuitem-toggle-checkbox:after {
+  background-color: #fff;
+  transform: translateX(16px);
+}
+
+.chrome-big-mode .chrome-menuitem[aria-checked=true] .chrome-menuitem-toggle-checkbox:after {
+  transform: translateX(24px);
+}
+
+.chrome-menuitem[role=menuitemradio] .chrome-menuitem-label {
+  padding-left: 35px;
+  padding-right: 20px;
+  border-bottom: none;
+}
+
+.chrome-big-mode .chrome-menuitem[role=menuitemradio] .chrome-menuitem-label {
+  padding-left: 52px;
+  padding-right: 35px;
+}
+
+.chrome-menuitem[role=menuitemradio][aria-checked=true] .chrome-menuitem-label {
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMTAwJSIgdmVyc2lvbj0iMS4xIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIxMDAlIj48cGF0aCBkPSJNOSAxNi4yTDQuOCAxMmwtMS40IDEuNEw5IDE5IDIxIDdsLTEuNC0xLjRMOSAxNi4yeiIgZmlsbD0iI2ZmZiIgLz48L3N2Zz4=);
+  background-repeat: no-repeat;
+  background-position: left 10px center;
+  background-size: 18px 18px;
+}
+
+.chrome-big-mode .chrome-menuitem[role=menuitemradio][aria-checked=true] .chrome-menuitem-label {
+  background-position: left 15px center;
+  background-size: 27px 27px;
 }
 
 .chrome-menuitem[aria-haspopup=true] .chrome-menuitem-content {
@@ -171,4 +216,12 @@
   background-size: 32px 32px;
   padding-right: 38px;
   background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMTAwJSIgdmVyc2lvbj0iMS4xIiB2aWV3Qm94PSIwIDAgMzIgMzIiIHdpZHRoPSIxMDAlIj48cGF0aCBkPSJtIDEyLjU5LDIwLjM0IDQuNTgsLTQuNTkgLTQuNTgsLTQuNTkgMS40MSwtMS40MSA2LDYgLTYsNiB6IiBmaWxsPSIjZmZmIiAvPjwvc3ZnPg==);
+}
+
+.chrome-big-mode .chrome-menuitem[aria-haspopup=true] .chrome-menuitem-content {
+  background-position: right 13px center;
+  background-size: 48px 48px;
+  -moz-background-size: 48px 48px;
+  -webkit-background-size: 48px 48px;
+  padding-right: 57px;
 }
